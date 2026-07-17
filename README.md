@@ -1,3 +1,6 @@
+> **This is [WeGram](WEGRAM.md)** — a fork of AyuGram with a one-button *"works without VPN"* autopilot.
+> Миссия, планы и статус: **[WEGRAM.md](WEGRAM.md)**. Below is the original AyuGram readme.
+
 # AyuGram
 
 ![AyuGram Logo](.github/AyuGram.png) ![AyuChan](.github/AyuChan.png)
