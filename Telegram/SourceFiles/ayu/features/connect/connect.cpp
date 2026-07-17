@@ -6,7 +6,6 @@
 #include "core/application.h"
 #include "core/core_settings.h"
 #include "core/core_settings_proxy.h"
-#include "main/main_app_config.h"
 
 #include <QtCore/QFile>
 #include <QtCore/QJsonDocument>

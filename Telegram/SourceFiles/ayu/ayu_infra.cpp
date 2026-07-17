@@ -11,6 +11,7 @@
 #include "ayu/ayu_ui_settings.h"
 #include "ayu/ayu_worker.h"
 #include "ayu/data/ayu_database.h"
+#include "ayu/features/connect/connect.h" // WeGram
 #include "ayu/ui/ayu_logo.h"
 #include "features/translator/ayu_translator.h"
 #include "lang/lang_instance.h"
@@ -75,6 +76,14 @@ void init() {
 	initWorker();
 	initRCManager();
 	initTranslator();
+
+	// WeGram: load autopilot settings; if the user enabled
+	// "connect on start", engage it right away.
+	auto &connect = WeGram::Connect::controller();
+	connect.loadSettings();
+	if (connect.settings().autoConnectOnStart) {
+		connect.connectToBest();
+	}
 }
 
 }

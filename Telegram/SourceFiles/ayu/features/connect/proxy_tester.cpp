@@ -23,10 +23,6 @@ ProxyTester::ProxyTester(MTP::ProxyData proxy, QObject *parent)
 	_result.proxy = _proxy;
 }
 
-ProxyTester::~ProxyTester() {
-	delete _socket;
-}
-
 ProxyTestResult ProxyTester::result() const {
 	return _result;
 }
@@ -77,7 +73,7 @@ void ProxyTester::start() {
 	// Overall timeout.
 	QTimer::singleShot(kTimeoutMs, this, [this] { fail(); });
 
-	_socket->connectToHost(_proxy.host, _proxy.port);
+	_socket->connectToHost(_proxy.host, quint16(_proxy.port));
 }
 
 void ProxyTester::runSocks5Handshake() {

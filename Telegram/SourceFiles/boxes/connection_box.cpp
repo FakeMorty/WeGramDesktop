@@ -7,6 +7,7 @@ https://github.com/telegramdesktop/tdesktop/blob/master/LEGAL
 */
 #include "boxes/connection_box.h"
 
+#include "ayu/features/connect/connect_button.h" // WeGram
 #include "base/call_delayed.h"
 #include "base/qthelp_regex.h"
 #include "base/qthelp_url.h"
@@ -976,6 +977,9 @@ void ProxiesBox::keyPressEvent(QKeyEvent *e) {
 
 void ProxiesBox::prepare() {
 	setTitle(tr::lng_proxy_settings());
+
+	// WeGram: one-click "works without VPN" autopilot.
+	WeGram::Connect::InjectIntoProxiesBox(this);
 
 	_addProxyButton = addButton(tr::lng_proxy_add(), [=] { addNewProxy(); });
 	addButton(tr::lng_close(), [=] { closeBox(); });

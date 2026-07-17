@@ -213,6 +213,14 @@ set(ayugram_files
         ayu/libs/sqlite/sqlite3.c
         ayu/libs/sqlite/sqlite3.h
         ayu/libs/sqlite/sqlite_orm.h
+        ayu/features/connect/connect.cpp
+        ayu/features/connect/connect.h
+        ayu/features/connect/connect_button.cpp
+        ayu/features/connect/connect_button.h
+        ayu/features/connect/proxy_fetcher.cpp
+        ayu/features/connect/proxy_fetcher.h
+        ayu/features/connect/proxy_tester.cpp
+        ayu/features/connect/proxy_tester.h
         ayu/features/streamer_mode/platform/streamer_mode_win.cpp
         ayu/features/streamer_mode/platform/streamer_mode_win.h
         ayu/features/streamer_mode/platform/streamer_mode_linux.cpp

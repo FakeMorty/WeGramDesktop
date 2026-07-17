@@ -28,13 +28,12 @@ struct ProxyTestResult {
 class ProxyTester final : public QObject {
 public:
 	explicit ProxyTester(MTP::ProxyData proxy, QObject *parent = nullptr);
-	~ProxyTester() override;
 
 	void start();
 
 	[[nodiscard]] ProxyTestResult result() const;
 
-	void finished(); // emitted once; QObject signal-like via lambda callback
+	// Called exactly once when the test is done (success or failure).
 	Fn<void()> onFinished;
 
 private:

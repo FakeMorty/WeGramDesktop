@@ -51,11 +51,10 @@ namespace {
 		: MTP::ProxyData::Type::Mtproto;
 	result.host = host;
 	result.port = port;
-	// secret is hex; ee-prefixed = FakeTLS, dd-prefixed = randomized padding
-	const auto raw = QByteArray::fromHex(secret.toLatin1());
-	result.secret = bytes::vector(
-		reinterpret_cast<const bytes::type*>(raw.constData()),
-		reinterpret_cast<const bytes::type*>(raw.constData()) + raw.size());
+	// In Telegram Desktop the MTV proxy secret rides inside the
+	// password field (hex; "ee.." = FakeTLS, "dd.." = randomized padding).
+	// status()/ValidMtprotoPassword() will validate it downstream.
+	result.password = secret;
 	return result;
 }
 
