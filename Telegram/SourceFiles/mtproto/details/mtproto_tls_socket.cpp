@@ -122,7 +122,15 @@ using BigNumContext = openssl::Context;
 
 	stack.emplace_back(Scope());
 
-	S("\x16\x03\x01"_q);
+	// WeGram (L2): randomize the TLS record-layer version on every
+	// generation, so DPI fingerprinting (JA4 — see the June-2026
+	// blocking wave, tdesktop PR #30738) cannot pin a fixed rule.
+	const auto recordHello = [pick = base::RandomValue<uint>() % 3] {
+		if (pick == 0) return "\x16\x03\x01"_q;
+		if (pick == 1) return "\x16\x03\x02"_q;
+		return "\x16\x03\x03"_q;
+	}();
+	S(recordHello);
 	OpenScope();
 	S("\x01\x00"_q);
 	OpenScope();
@@ -168,9 +176,24 @@ using BigNumContext = openssl::Context;
 				"\x08\x05\x05\x01\x08\x06\x06\x01"_q);
 		}
 		StartPermutationElement(); {
-			S(""
-				"\x00\x10\x00\x0e\x00\x0c\x02\x68\x32\x08\x68\x74\x74\x70"
-				"\x2f\x31\x2e\x31"_q);
+			// WeGram (L2): rotate the ALPN advertisement — JA4 records
+			// the first ALPN token, so rotating it changes the hash.
+			switch (base::RandomValue<uint>() % 3) {
+			case 0: // stock: h2, http/1.1
+				S(""
+					"\x00\x10\x00\x0e\x00\x0c\x02\x68\x32\x08\x68\x74\x74\x70"
+					"\x2f\x31\x2e\x31"_q);
+				break;
+			case 1: // reordered: http/1.1, h2
+				S(""
+					"\x00\x10\x00\x0e\x00\x0c\x08\x68\x74\x74\x70\x2f\x31"
+					"\x2e\x31\x02\x68\x32"_q);
+				break;
+			default: // http/1.1 only
+				S("\x00\x10\x00\x0b\x00\x09\x08\x68\x74\x74\x70\x2f"
+					"\x31\x2e\x31"_q);
+				break;
+			}
 		}
 		StartPermutationElement(); {
 			S("\x00\x12\x00\x00"_q);
@@ -652,7 +675,10 @@ void TlsSocket::plainConnected() {
 		return;
 	}
 
-	static const auto kClientHelloRules = PrepareClientHelloRules();
+	// WeGram (L2): rules are regenerated per connection (no `static`)
+	// so the random picks inside PrepareClientHelloRules() (record
+	// version, ALPN set) produce a fresh JA4 fingerprint each time.
+	const auto kClientHelloRules = PrepareClientHelloRules();
 	const auto hello = PrepareClientHello(
 		kClientHelloRules,
 		domainFromSecret(),
