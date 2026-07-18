@@ -51,7 +51,7 @@ rpl::producer<State> Controller::stateChanges() const {
 void Controller::setState(State state) {
 	if (_state != state) {
 		_state = state;
-		_stateStream.fire(state);
+		_stateStream.fire_copy(state);
 	}
 }
 

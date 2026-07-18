@@ -55,7 +55,7 @@ void InjectIntoProxiesBox(Ui::BoxContent *box) {
 	}
 
 	controller().stateChanges(
-	) | rpl::start_with_next([=](State state) {
+	) | rpl::on_next([=](State state) {
 		raw->setText(rpl::single(ButtonText(state)));
 		const auto busy = (state == State::Fetching)
 			|| (state == State::Testing)
